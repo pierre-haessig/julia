@@ -1,6 +1,6 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
-import Base.Pkg.PkgError
+import Pkg.PkgError
 using Random: randstring
 
 function capture_stdout(f::Function)
@@ -324,7 +324,7 @@ temp_pkg_dir() do
         meth = first(methods(Example.domath))
         fname = string(meth.file)
         @test ('\\' in fname) == Sys.iswindows()
-        @test startswith(Base.url(meth), "https://github.com/JuliaLang/Example.jl/tree")
+        # @test startswith(Base.url(meth), "https://github.com/JuliaLang/Example.jl/tree")
     end
 
     # add a directory that is not a git repository
@@ -564,8 +564,7 @@ temp_pkg_dir() do
         write(joinpath(home, ".juliarc.jl"), "const JULIA_RC_LOADED = true")
 
         withenv((Sys.iswindows() ? "USERPROFILE" : "HOME") => home) do
-            code = "redirect_stderr(STDOUT); using Logging; global_logger(SimpleLogger(STDOUT)); Pkg.build(\"$package\")"
-
+            code = "redirect_stderr(STDOUT); using Logging; global_logger(SimpleLogger(STDOUT)); import Pkg; Pkg.build(\"$package\")"
             msg = read(`$(Base.julia_cmd()) --startup-file=no -e $code`, String)
             @test contains(msg, "JULIA_RC_LOADED defined false")
             @test contains(msg, "Main.JULIA_RC_LOADED defined false")
@@ -574,7 +573,7 @@ temp_pkg_dir() do
             @test contains(msg, "JULIA_RC_LOADED defined false")
             @test contains(msg, "Main.JULIA_RC_LOADED defined true")
 
-            code = "redirect_stderr(STDOUT); using Logging; global_logger(SimpleLogger(STDOUT)); Pkg.test(\"$package\")"
+            code = "redirect_stderr(STDOUT); using Logging; global_logger(SimpleLogger(STDOUT)); import Pkg; Pkg.test(\"$package\")"
 
             msg = read(`$(Base.julia_cmd()) --startup-file=no -e $code`, String)
             @test contains(msg, "JULIA_RC_LOADED defined false")
@@ -597,7 +596,7 @@ temp_pkg_dir() do
             """
         write_build(package, content)
 
-        code = "Pkg.build(\"$package\")"
+        code = "import Pkg; Pkg.build(\"$package\")"
         msg = run(pipeline(
             `$(Base.julia_cmd()) --startup-file=no -e $code`,
             stdout=stdout_file, stderr=stderr_file))
@@ -654,7 +653,7 @@ end
 end
 
 let io = IOBuffer()
-    Base.showerror(io, Base.Pkg.Entry.PkgTestError("ppp"), backtrace())
+    Base.showerror(io, Pkg.Entry.PkgTestError("ppp"), backtrace())
     @test !contains(String(take!(io)), "backtrace()")
 end
 

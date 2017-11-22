@@ -357,7 +357,6 @@ export conv, conv2, deconv, filt, filt!, xcorr
 @deprecate_moved RemoteException "Distributed" true true
 @deprecate_moved ProcessExitedException "Distributed" true true
 
-
 @deprecate_moved crc32c "CRC32c" true true
 
 @deprecate_moved DateTime "Dates" true true
@@ -370,6 +369,7 @@ export conv, conv2, deconv, filt, filt!, xcorr
 
 @eval @deprecate_moved $(Symbol("@printf")) "Printf" true true
 @eval @deprecate_moved $(Symbol("@sprintf")) "Printf" true true
+
 
 # PR #21709
 @deprecate cov(x::AbstractVector, corrected::Bool) cov(x, corrected=corrected)
