@@ -1798,7 +1798,7 @@ function findlast(A)
 end
 
 # Needed for bootstrap, and allows defining only an optimized findprev method
-findlast(A::Union{AbstractArray, AbstractString}) = findprev(A, last(keys(A)))
+findlast(A::Union{AbstractArray, AbstractString}) = findprev(A, endindex(A))
 
 """
     findprev(predicate::Function, A, i)
@@ -1886,7 +1886,7 @@ end
 
 # Needed for bootstrap, and allows defining only an optimized findprev method
 findlast(testf::Function, A::Union{AbstractArray, AbstractString}) =
-    findprev(testf, A, last(keys(A)))
+    findprev(testf, A, endindex(A))
 
 """
     findall(f::Function, A)
