@@ -926,7 +926,7 @@ end
 #   3. There must not be any broadcasting beyond scalar — all array sizes must match
 # We could eventually allow for all broadcasting and other array types, but that
 # requires very careful consideration of all the edge effects.
-const ChunkableOp = Union{typeof(&), typeof(|), typeof(xor), typeof(~), typeof(!)}
+const ChunkableOp = Union{typeof(&), typeof(|), typeof(xor), typeof(~)}
 const BroadcastedChunkableOp{Style<:Union{Nothing,BroadcastStyle}, ElType, Axes, Indexing<:Union{Nothing,TupleLL}, F<:ChunkableOp, Args<:TupleLL} = Broadcasted{Style,ElType,Axes,Indexing,F,Args}
 ischunkedbroadcast(R, bc::BroadcastedChunkableOp) = ischunkedbroadcast(R, bc.args)
 ischunkedbroadcast(R, args) = false
