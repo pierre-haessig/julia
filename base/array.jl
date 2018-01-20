@@ -2164,7 +2164,7 @@ indmin(a) = findmin(a)[2]
 
 Return an array containing the highest index in `b` for
 each value in `a` that is a member of `b`. The output
-array contains 0 wherever `a` is not a member of `b`.
+array contains `nothing` wherever `a` is not a member of `b`.
 
 # Examples
 ```jldoctest
@@ -2178,7 +2178,7 @@ julia> indexin(a, b)
  2
  3
  2
- 0
+  nothing
  1
 
 julia> indexin(b, a)
@@ -2189,8 +2189,8 @@ julia> indexin(b, a)
 ```
 """
 function indexin(a, b::AbstractArray)
-    bdict = Dict(zip(b, 1:length(b)))
-    map(i -> get(bdict, i, 0), a)
+    bdict = Dict(zip(b, eachindex(b)))
+    map(i -> get(bdict, i, nothing), a)
 end
 
 function _findin(a, b)
