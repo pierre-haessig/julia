@@ -943,6 +943,7 @@ ithchunk(i) = ()
 Base.@propagate_inbounds ithchunk(i, c::Vector{UInt64}, args...) = (c[i], ithchunk(i, args...)...)
 Base.@propagate_inbounds ithchunk(i, b::UInt64, args...) = (b, ithchunk(i, args...)...)
 function chunkedcopyto!(dest::BitArray, bc::Broadcasted)
+    isempty(dest) && return dest
     f = flatten(bc)
     args = liftchunks(f.args)
     dc = dest.chunks

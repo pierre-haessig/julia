@@ -1010,7 +1010,7 @@ timesofar("unary arithmetic")
         @check_bit_operation broadcast(^, b1, 1im)    Matrix{ComplexF64}
         @check_bit_operation broadcast(^, b1, 0x1*im)  Matrix{ComplexF64}
     end
-    
+
     @testset "Matrix/Vector" begin
         b1 = bitrand(n1, n2)
         b2 = bitrand(n1)
