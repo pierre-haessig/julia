@@ -487,4 +487,22 @@ end
     end
 end
 
+@testset "#25625 recursive transposition" begin
+    A = Matrix{Matrix{Int}}(uninitialized, 2, 2)
+    A[1,1] = [1 2; 2 3]
+    A[1,2] = [4 5 6; 7 8 9]
+    A[2,2] = hcat([11])
+    S = Symmetric(A)
+    @test S[1,2] == transpose(S[2,1])
+    @test S == transpose(S) == Matrix(S) == Matrix(transpose(S)) == transpose(Matrix(S))
+
+    B = Matrix{Matrix{Complex{Int}}}(uninitialized, 2, 2)
+    B[1,1] = [1 2+im; 2-im 3]
+    B[1,2] = [4 5+1im 6-2im; 7+3im 8-4im 9+5im]
+    B[2,2] = hcat([11])
+    H = Hermitian(B)
+    @test H[1,2] == adjoint(H[2,1])
+    @test H == adjoint(H) == Matrix(H) == Matrix(adjoint(H)) == adjoint(Matrix(H))
+end
+
 end # module TestSymmetric

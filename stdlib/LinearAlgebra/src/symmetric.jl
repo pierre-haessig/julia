@@ -1,7 +1,7 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
 # Symmetric and Hermitian matrices
-struct Symmetric{T,S<:AbstractMatrix{T}} <: AbstractMatrix{T}
+struct Symmetric{T,S<:AbstractMatrix{<:T}} <: AbstractMatrix{T}
     data::S
     uplo::Char
 end
@@ -40,9 +40,12 @@ julia> Slower = Symmetric(A, :L)
 
 Note that `Supper` will not be equal to `Slower` unless `A` is itself symmetric (e.g. if `A == transpose(A)`).
 """
-Symmetric(A::AbstractMatrix, uplo::Symbol=:U) = (checksquare(A); Symmetric{eltype(A),typeof(A)}(A, char_uplo(uplo)))
+function Symmetric(A::AbstractMatrix, uplo::Symbol=:U)
+    checksquare(A)
+    Symmetric{Union{eltype(A),promote_op(transpose, eltype(A))},typeof(A)}(A, char_uplo(uplo))
+end
 
-struct Hermitian{T,S<:AbstractMatrix{T}} <: AbstractMatrix{T}
+struct Hermitian{T,S<:AbstractMatrix{<:T}} <: AbstractMatrix{T}
     data::S
     uplo::Char
 end
@@ -83,7 +86,7 @@ Hermitian(fill(complex(1,1), 1, 1)) == fill(1, 1, 1)
 """
 function Hermitian(A::AbstractMatrix, uplo::Symbol=:U)
     n = checksquare(A)
-    Hermitian{eltype(A),typeof(A)}(A, char_uplo(uplo))
+    Hermitian{Union{eltype(A),promote_op(adjoint, eltype(A))},typeof(A)}(A, char_uplo(uplo))
 end
 
 for (S, H) in ((:Symmetric, :Hermitian), (:Hermitian, :Symmetric))
@@ -118,7 +121,7 @@ size(A::HermOrSym) = size(A.data)
     @inbounds if (A.uplo == 'U') == (i < j)
         return A.data[i, j]
     else
-        return A.data[j, i]
+        return transpose(A.data[j, i])
     end
 end
 @inline function getindex(A::Hermitian, i::Integer, j::Integer)
@@ -126,9 +129,9 @@ end
     @inbounds if (A.uplo == 'U') == (i < j)
         return A.data[i, j]
     elseif i == j
-        return eltype(A)(real(A.data[i, j]))
+        return convert(typeof(A.data[i, j]), real(A.data[i, j]))
     else
-        return conj(A.data[j, i])
+        return adjoint(A.data[j, i])
     end
 end
 
