@@ -979,6 +979,8 @@ Deprecated or removed
 
   * `Base.@gc_preserve` has been deprecated in favor of `GC.@preserve` ([#25616]).
 
+  * `scale!` has been deprecated in favor of `mul!`, `mul1!`, and `mul2!` ([#25701]).
+
 Command-line option changes
 ---------------------------
 
